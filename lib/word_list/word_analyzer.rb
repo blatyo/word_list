@@ -13,7 +13,6 @@ module WordList
           if word1 != word2 && !share_common_letter?(word1, word2)
             curr_word1, curr_word2 = word1, word2 if (!curr_word1 && !curr_word2) ||
               !current_words_have_greater_product?(curr_word1, curr_word2, word1, word2)
-            puts "#{curr_word1.join} #{curr_word2.join} #{@word_list[i]} #{@word_list[j]}"
           end
         end if i < word_list.length - 1
       end
