@@ -7,13 +7,11 @@ module WordList
       @word_analyzer = WordAnalyzer.new ListLoader.parse(fixture) 
     end
 
-=begin
     describe "#analyze" do
-      it "should find two words that share no letters in common" do
-        @word_analyzer.analyze.should == ['aaa', 'simple']
+      it "should find two words that share no letters in common that have the maximum product" do
+        @word_analyzer.analyze.sort.should == ['aaa', 'simple']
       end
     end
-=end
 
     describe "#share_common_letter?" do
       it "should return true if the words share a common letter" do
