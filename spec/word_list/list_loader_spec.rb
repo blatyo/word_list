@@ -8,5 +8,5 @@ module WordList
         ListLoader.parse(fixture).should == ["aaa", "list", "simple"]
       end
     end
-end
+  end
 end
