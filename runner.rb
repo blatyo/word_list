@@ -3,6 +3,7 @@ require path + '/lib/word_list'
 
 before = Time.now
 word1, word2 = WordList.run(path + '/spec/fixtures/WORD-SUPER-SHORT.LST')
+#word1, word2 = WordList.run(path + '/spec/fixtures/word.lst')
 after = Time.now
 puts <<HERE
 Of the pairs of words in the given dictionary that have no letters in common,

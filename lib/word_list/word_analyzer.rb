@@ -7,9 +7,9 @@ module WordList
     ALPHABET = "abcdefghijklmnopqrstuvwxyz".split('')
     
     def analyze
-      word_list = @word_list.collect do |word|
-        [word, word.split('').uniq, word.length]
-      end.sort{|w1, w2| w2[2] <=> w1[2]}
+      word_list = @word_list.sort do |w1, w2|
+        (w2[2] ||= w2[0].length) <=> (w1[2] ||= w1[0].length)
+      end
       all_indices = (0...word_list.length).to_a
       longest_length = word_list[0][2]
 
@@ -17,14 +17,12 @@ module WordList
       index = {}
       ALPHABET.each{|letter| index[letter] = []}
       word_list.each_with_index do |word, i|
-        next if curr_prod / word[2] > longest_length
-        word[1].each{|letter| index[letter] << i}
+        next if (beat = curr_prod / word[2]) > longest_length
+        (word[1] = word[0].split('').uniq).each{|letter| index[letter] << i}
         j = best_pair(index, word[1], all_indices, i)
         next unless j
-        word2 = word_list[j]
-        if curr_prod < word[2] * word2[2]
-          curr_word1, curr_word2, curr_prod = word, word2, word[2] * word2[2]
-        end
+        next if (word2 = word_list[j])[2] < beat
+        curr_word1, curr_word2, curr_prod = word, word2, word[2] * word2[2]
       end
       [curr_word1[0], curr_word2[0]]
     end
