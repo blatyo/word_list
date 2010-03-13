@@ -23,18 +23,21 @@ module WordList
         (word[1] = word[0].split('').uniq).each{|letter| index[letter] << i}
         j = best_pair(index, word[1], all_indices, i)
         next unless j
-        next if word_list[j][2] < beat
+        if word_list[j][2] < beat
+          index['skip'] << j
+          next
+        end
         curr_word1, curr_word2, curr_prod = word, word_list[j], word[2] * word_list[j][2]
       end
       [curr_word1[0], curr_word2[0]]
     end
 
     def best_pair(index, word, all_indices, current)
-      not_pairs = []
+      not_pairs = index['skip']
       word.uniq.each do |letter|
         not_pairs = not_pairs + index[letter]
       end
-      (all_indices[0...current] - (not_pairs + index['skip'])).first
+      (all_indices[0...current] - not_pairs).first
     end
   end
 end
