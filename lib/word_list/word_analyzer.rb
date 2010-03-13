@@ -12,29 +12,29 @@ module WordList
       all_indices = (0...word_list.length).to_a
 
       curr_word1, curr_word2 = "", ""
-      word_list[0...(word_list.length - 1)].each do |word1|
-        possible_pairs(index, word1, all_indices).each do |i|
-          unless current_words_have_greater_product?(curr_word1, curr_word2, word1, word_list[i])
-            curr_word1, curr_word2 = word1, word_list[i]
+      word_list[0...(word_list.length - 1)].each_with_index do |word1, i|
+        possible_pairs(index, word1, all_indices, i).each do |j|
+          unless current_words_have_greater_product?(curr_word1, curr_word2, word1, word_list[j])
+            curr_word1, curr_word2 = word1, word_list[j]
           end
         end
       end
       [@word_list[word_list.index(curr_word1)], @word_list[word_list.index(curr_word2)]] 
     end
 
-    def possible_pairs(index, word, all_indices)
+    def possible_pairs(index, word, all_indices, i)
       not_pairs = []
       word.uniq.each do |letter|
         not_pairs = not_pairs + index[letter]
       end
-      all_indices - not_pairs
+      all_indices[(i+1)...all_indices.length] - not_pairs
     end
 
     def build_index(word_list)
       index = {}
       ALPHABET.each{|letter| index[letter] = []}
       word_list.each_with_index do |word, i|
-        word.each{|letter| index[letter] << i} 
+        word.each{|letter| index[letter] << i}
       end
       index
     end
