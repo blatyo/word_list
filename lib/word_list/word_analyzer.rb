@@ -9,18 +9,13 @@ module WordList
       word_list = reverse_map.sort
       index = build_index word_list
 
-      bucket = {}
-      word_list[0...(word_list.length - 1)].each do |word1|
+      curr_word1, curr_word2 = "", ""
+      word_list[0...(word_list.length - 1)].each_with_index do |word1, i|
         word_list[(index[word1[0]]+1)...word_list.length].each do |word2|
-          bucket["#{word1} #{word2}"] = word1.length * word2.length
+          unless current_words_have_greater_product?(curr_word1, curr_word2, word1, word2)
+            curr_word1, curr_word2 = word1, word2 unless share_common_letter?(word1, word2)
+          end
         end
-      end
-
-      sorted_product = bucket.sort{|b1, b2| b2[1] <=> b1[1]}
-
-      curr_word1, curr_word2 = sorted_product.each do |key|
-        word1, word2 = key.split
-        break [word1, word2] unless share_common_letter?(word1, word2)
       end
       [@word_list[reverse_map.index(curr_word1)], @word_list[reverse_map.index(curr_word2)]] 
     end
