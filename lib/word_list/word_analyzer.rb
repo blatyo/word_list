@@ -7,30 +7,34 @@ module WordList
     ALPHABET = "abcdefghijklmnopqrstuvwxyz".split('')
     
     def analyze
-      word_list = @word_list.collect{|word| word.split('').sort}
-      # index = build_index word_list
+      word_list = @word_list.collect do |word|
+        [word, word.split('').uniq, word.length]
+      end.sort{|w1, w2| w2[2] <=> w1[2]}
       all_indices = (0...word_list.length).to_a
+      longest_length = word_list[0][2]
 
-      curr_word1, curr_word2 = "", ""
+      curr_word1, curr_word2, curr_prod = [], [], 0
       index = {}
       ALPHABET.each{|letter| index[letter] = []}
       word_list.each_with_index do |word, i|
-        word.each{|letter| index[letter] << i}
-        possible_pairs(index, word, all_indices, i).each do |j|
-          unless current_words_have_greater_product?(curr_word1, curr_word2, word, word_list[j])
-            curr_word1, curr_word2 = word, word_list[j]
-          end
+        next if curr_prod / word[2] > longest_length
+        word[1].each{|letter| index[letter] << i}
+        j = best_pair(index, word[1], all_indices, i)
+        next unless j
+        word2 = word_list[j]
+        if curr_prod < word[2] * word2[2]
+          curr_word1, curr_word2, curr_prod = word, word2, word[2] * word2[2]
         end
       end
-      [@word_list[word_list.index(curr_word1)], @word_list[word_list.index(curr_word2)]] 
+      [curr_word1[0], curr_word2[0]]
     end
 
-    def possible_pairs(index, word, all_indices, i)
+    def best_pair(index, word, all_indices, current)
       not_pairs = []
       word.uniq.each do |letter|
         not_pairs = not_pairs + index[letter]
       end
-      all_indices[0...i] - not_pairs
+      (all_indices[0...current] - not_pairs).first
     end
 
     def build_index(word_list)
@@ -58,8 +62,8 @@ module WordList
       end
     end
 
-    def current_words_have_greater_product?(curr_word1, curr_word2, word1, word2)
-      (curr_word1.length * curr_word2.length) > (word1.length * word2.length)
+    def current_words_have_lesser_product?(curr_product, word1, word2)
+      curr_product < word1.length * word2.length
     end
   end
 end
